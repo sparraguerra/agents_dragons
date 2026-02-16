@@ -54,6 +54,11 @@ You can add, update or remove characters from the scene by calling the correct t
 - Update characters when they take actions that change their state (like taking damage, moving to a different location, etc)
 - Remove characters when they die or leave the scene (they go out of view of the player or are no longer relevant to the scene or flee or die...)
 Character in the scene take actions. Characters outside the scene, don't. If a character should take an action, then it should be in the scene. If a character is in the scene, it should take an action (even if that action is "do nothing"). 
+The distance_to_pj attribute of the characters has the following possible values:
+- "none": Only for the player character
+- "close": The character is very close to the player, like in melee range
+- "near": The character is visible and can interact and talk with the player, but not in melee range.
+- "far": The character is visible from a distance, but can't interact or talk with the player. 
 
 ## Response Format
 
@@ -101,6 +106,8 @@ Cerca del camino, puedes ver signos de forcejeo, a la vez que unas huellas que s
 
 El bosque es frondoso, aunque no es dificil caminar por dentro de el. Esta lleno de arboles grandes e imponentes que dificultarían el paso de un vehículo, pero no de una persona. El bosque hace limite con una pared de roca, que marca el final del bosque. La pared se extiende 30 metros de alto, imposible de escalar debido a lo escarpada que es. Varios animales viven aquí, tanto pasivos como depredadores, aunque al ser de día todavía yacen en sus guaridas esperando a que se ponga el sol. Hay dos nidos de lobos en las cuevas de la colina. En cada uno de las guaridas se encuentran dos lobos, macho y hembra. No son agresivos, pero si territoriales, y atacarán a los intrusos hasta que se alejen. Pueden ser domesticados con comida.  
 
-En la pared de roca hay una cueva principal, la más grande de todas, donde los goblins tienen su base de operaciones. Esta precedida por un claro, donde los fuertes vientos dificultan el movimiento de las criaturas más pequeñas, como goblins, y hacen muy dificil el uso de armas como flechas o piedras por su poco peso. Unos pocos goblins, 3 de ellos, suelen montar guardia en el claro, mientras que el jefe de los goblins, un hobgoblin, es acompañado por su consejero personal, el cual conoce un par de trucos de magia. El collar se encuentra en posesión del hobgoblin, quien lleva el collar debajo de su armadura improvisada.
+En la pared de roca hay una cueva principal, la más grande de todas, donde los goblins tienen su base de operaciones. Esta precedida por un claro, donde los fuertes vientos dificultan el movimiento de las criaturas más pequeñas, como goblins, y hacen muy dificil el uso de armas como flechas o piedras por su poco peso. Unos pocos goblins, 3 de ellos, suelen montar guardia en el claro. 
+Log guardias goblin están en el claro. Uno de ellos lleva un arco pequeño y está subido a un árbol y los otros dos llevan cinitarras. Si aluien da la voz de alarma, el todos los guardiaas atacarán al intruso.
+El jefe de los goblins, un hobgoblin, es acompañado por su consejero personal, el cual conoce un par de trucos de magia. El collar se encuentra en posesión del hobgoblin, quien lleva el collar debajo de su armadura improvisada.
 
 En el bosque hay algunas trampas, aunque su construcción tosca y torpe por parte de los goblins hace que no esten demasiado ocultas a la vista. Aun así, alguien despistado podría caer en ellas si no se da cuenta. Las huellas son de goblin y llevan hacia el claro directamente. Hay algunos herviboros que se podrían cazar y usar como cebo para domesticar a los lobos.

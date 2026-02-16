@@ -45,9 +45,8 @@ class SceneManager(Agent):
         
         
         self.scene_path = os.path.join(root_dir, 'data', 'scene.json')
-        if not os.path.exists(self.scene_path):
-            with open(self.scene_path, 'w') as f:
-                json.dump({"characters": []}, f)
+        with open(self.scene_path, 'w') as f:
+            json.dump({"characters": []}, f)
                         
         with open(self.scene_path, 'r') as f:
             self.data = json.load(f)
@@ -70,6 +69,8 @@ class SceneManager(Agent):
         character = next((c for c in self.data['characters'] if c['name'] == name), None)
         if character:
             for key, value in zip(keys_to_update, new_values):
+                if key == 'current_hp' and value <= 0:
+                    return self.remove_character_from_scene(name)
                 character[key] = value
             with open(self.scene_path, 'w') as f:
                 json.dump(self.data, f)
