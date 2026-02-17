@@ -43,6 +43,7 @@ class RulesCharacter(BaseModel):
     
 class RulesInput(BaseModel):
     character: RulesCharacter
+    scene: Scene
     
 class RulesOutput(BaseModel):
     character_name: str
@@ -56,3 +57,7 @@ class NPCOutput(BaseModel):
     dialogue: str 
     
 RulesInputSchema = RulesInput.schema()
+
+class RulesFullOutput(BaseModel):
+    rulesOutput: RulesOutput
+    scene: Scene
