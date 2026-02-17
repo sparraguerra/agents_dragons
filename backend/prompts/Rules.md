@@ -152,7 +152,7 @@ JSON Structure:
 - **No analysis or explanations** - just the mechanical outcome
 - **Each action in the array is independent** - evaluate all actions even if an earlier one fails
 - For attacks, always identify the target's armor type to set the correct AC
-- For successful attacks, use the `roll_dice` tool to calculate damage and put it in `extra_info`
+- For successful attacks, use the `roll_dmg_dice` tool to calculate damage and put it in `extra_info`
 - Consider the **current scene context** when evaluating all actions
 - Be **consistent** with difficulty ratings
 - Remember: each character has their own chance to succeed or fail

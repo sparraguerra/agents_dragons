@@ -61,3 +61,15 @@ RulesInputSchema = RulesInput.schema()
 class RulesFullOutput(BaseModel):
     rulesOutput: RulesOutput
     scene: Scene
+           
+class RollDiceTarget(BaseModel):
+    character_name: str
+    current_hp: int
+    
+class RollDiceInput(BaseModel):
+    character_name: str
+    targets: list[RollDiceTarget]
+    modifier_name: str
+    num_dice: int
+    dice_type: int
+    modifier: int = 0
