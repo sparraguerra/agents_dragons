@@ -1,4 +1,3 @@
-from asyncio.log import logger
 import random
 from typing import List
 from agent_framework import AIFunction
@@ -36,7 +35,7 @@ def simulate_check(character_name: str, modifier_name: str, difficulty: int, mod
     return success
 
 
-def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_name: str, num_dice: int, dice_type: int, modifier: int = 0) -> dict[str, any]:
+def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_name: str, num_dice: int, dice_type: int, modifier: int = 0, **kwargs) -> dict[str, any]:
     """
     Rolls multiple dice of the same type and adds a flat modifier.
     
@@ -57,6 +56,7 @@ def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_n
     Raises:
         ValueError: If dice_type is not supported
     """
+    logger = config_logging("Damage roll")
     valid_dice = [4, 6, 8, 10, 12, 20, 100]
     if dice_type not in valid_dice:
         raise ValueError(f"Unsupported dice type: D{dice_type}. Valid types: {valid_dice}")
@@ -65,10 +65,8 @@ def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_n
     total_damage = total + modifier
     if targets:
         for target in targets:
-            logger.info(f"{character_name} rolls {num_dice}D{dice_type}+{modifier_name} against {target.name} and deals {total_damage} damage.")
-            target.current_hp = target.current_hp - total_damage
-
-    logger = config_logging("Damage check")
+            #logger.info(f"{character_name} rolls {num_dice}D{dice_type}+{modifier_name} against {target['character_name']} and deals {total_damage} damage.")
+            target['current_hp'] = target['current_hp'] - total_damage
     log = json.dumps(
         {
             "character_name": character_name,
@@ -76,7 +74,7 @@ def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_n
             "num_dice": num_dice,
             "dice_type": dice_type,
             "modifier": modifier,
-            "targets": [target.dict() for target in targets],
+            "targets": targets,
             "total": total_damage
         },
         indent=4,
@@ -104,6 +102,6 @@ class RulesAgent(Agent):
         # Force JSON response format
         self.agent.response_format = {"type": "json_object"}
         
-    async def run(self, character: RulesCharacter, scene: Scene, **kwargs) -> str:
+    async def run(self, character: RulesCharacter, scene: Scene, debug=False, **kwargs) -> str:
         full_input = RulesInput(character=character, scene=scene).json()
-        return await super().run(full_input, response_format=RulesFullOutput)
+        return await super().run(full_input, response_format=RulesFullOutput, debug=debug)
