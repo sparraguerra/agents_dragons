@@ -7,7 +7,9 @@ from agents.rules import RulesAgent
 from agents.scene import SceneManager
 import uvicorn
 import logging
-from agent_framework import AIFunction    
+from agent_framework import AIFunction
+from pathlib import Path
+from typing import List    
 
 
 
@@ -30,7 +32,7 @@ scene_manager = SceneManager()
 scene_tools = [AIFunction(func=getattr(scene_manager, tool['name']), name=tool['name'], description=tool['description'], input_model=tool['input_model']) for tool in scene_manager.tools_exposed]
 tools.extend(scene_tools)
 
-orchestrator_agent = OrchestratorAgent(tools=tools)
+orchestrator_agent = OrchestratorAgent()
 
 
 class GameRequest(BaseModel):
@@ -40,6 +42,9 @@ class GameRequest(BaseModel):
 
 class GameResponse(BaseModel):
     response: str
+    
+class StartGameRequest(BaseModel):
+    story: str
 
 
 @app.post("/game", response_model=GameResponse)
@@ -60,5 +65,34 @@ async def play_game(request: GameRequest):
     return GameResponse(response=result)
 
 
+@app.post("/start")
+async def start_game(request: StartGameRequest):
+    """
+    Start a new game
+    """
+    logging.info(request)
+    orchestrator_agent.init_agent(tools=tools, story=request.story)
+    return {"status": "ready"}
+
+
+@app.get("/stories", response_model=List[str])
+async def get_stories():
+    """
+    Get the list of available story titles from the stories folder.
+    """
+    stories_dir = Path(__file__).parent / "stories"
+    
+    if not stories_dir.exists():
+        return []
+    
+    story_titles = []
+    for story_file in stories_dir.glob("*.md"):
+        # Get filename without extension and replace underscores with spaces
+        title = story_file.stem.replace("_", " ")
+        story_titles.append(title)
+    
+    return sorted(story_titles)
+
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8005)

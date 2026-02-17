@@ -7,7 +7,7 @@ import json
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             
 class Agent:
-    def __init__(self, name: str, description: str, tools: list = [], threading: bool = True, input_model = None, parallel_tool_calls=False, allow_multiple_tool_calls=False):
+    def __init__(self, name: str, description: str, tools: list = [], threading: bool = True, input_model = None, parallel_tool_calls=False, allow_multiple_tool_calls=False, extra_instructions:str = None):
         openai_client = get_openai_client()
         self.name = name
         self.description = description
@@ -20,6 +20,9 @@ class Agent:
         except FileNotFoundError:
             instructions = "No instructions provided."
             self.logger.error(f"No instructions found") 
+            
+        if extra_instructions:
+            instructions += "\n\n" + extra_instructions
 
         self.agent = ChatAgent(
             chat_client=openai_client,
