@@ -37,14 +37,23 @@
         <div v-else-if="stories.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             v-for="story in stories"
-            :key="story"
-            @click="selectStory(story)"
+            :key="story.title"
+            @click="selectStory(story.title)"
             class="group relative overflow-hidden rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           >
-            <!-- Background Image (Placeholder) -->
+            <!-- Background Image -->
             <div class="aspect-video bg-gradient-to-br from-fantasy-accent to-fantasy-highlight relative">
-              <div class="absolute inset-0 bg-cover bg-center opacity-40" 
-                   style="background-image: url('https://images.unsplash.com/photo-1518562923427-c91e4d58a814?w=500&h=300&fit=crop')">
+              <div 
+                v-if="story.image"
+                class="absolute inset-0 bg-cover bg-center opacity-60" 
+                :style="`background-image: url('data:image/png;base64,${story.image}')`"
+              >
+              </div>
+              <div 
+                v-else
+                class="absolute inset-0 bg-cover bg-center opacity-40" 
+                style="background-image: url('https://images.unsplash.com/photo-1518562923427-c91e4d58a814?w=500&h=300&fit=crop')"
+              >
               </div>
               <div class="absolute inset-0 bg-gradient-to-t from-fantasy-dark via-transparent to-transparent"></div>
             </div>
@@ -53,18 +62,11 @@
             <div class="absolute inset-0 flex items-end p-6">
               <div class="w-full">
                 <h3 class="text-2xl font-bold text-white capitalize group-hover:text-fantasy-gold transition-colors">
-                  {{ story }}
+                  {{ story.title }}
                 </h3>
                 <div class="flex items-center mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <span class="text-fantasy-gold text-sm">Begin Adventure →</span>
                 </div>
-              </div>
-            </div>
-
-            <!-- Decorative Corner -->
-            <div class="absolute top-0 right-0 w-16 h-16">
-              <div class="absolute transform rotate-45 bg-fantasy-gold text-fantasy-dark text-xs font-bold py-1 px-8 right-[-32px] top-[12px]">
-                NEW
               </div>
             </div>
           </div>
@@ -115,8 +117,8 @@ export default {
       }
     }
 
-    const selectStory = (story) => {
-      emit('select-story', story)
+    const selectStory = (storyTitle) => {
+      emit('select-story', storyTitle)
     }
 
     onMounted(() => {

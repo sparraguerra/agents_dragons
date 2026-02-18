@@ -1,3 +1,4 @@
+import base64
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -9,7 +10,7 @@ import uvicorn
 import logging
 from agent_framework import AIFunction
 from pathlib import Path
-from typing import List    
+from typing import Dict, List    
 
 
 
@@ -71,11 +72,11 @@ async def start_game(request: StartGameRequest):
     Start a new game
     """
     logging.info(request)
-    orchestrator_agent.init_agent(tools=tools, story=request.story)
-    return {"status": "ready"}
+    introduction = orchestrator_agent.init_agent(tools=tools, story=request.story)
+    return {"introduction": introduction}
 
 
-@app.get("/stories", response_model=List[str])
+@app.get("/stories", response_model=List[Dict[str, str | None]])
 async def get_stories():
     """
     Get the list of available story titles from the stories folder.
@@ -89,9 +90,17 @@ async def get_stories():
     for story_file in stories_dir.glob("*.md"):
         # Get filename without extension and replace underscores with spaces
         title = story_file.stem.replace("_", " ")
-        story_titles.append(title)
+        
+        # load the image and convert it to base64 if there's an image with the same name as the story
+        image_file = story_file.with_suffix(".png")
+        image = None
+        if image_file.exists():
+            with open(image_file, "rb") as img_f:
+                image = base64.b64encode(img_f.read()).decode("utf-8")
+        
+        story_titles.append({"title": title, "image": image})        
     
-    return sorted(story_titles)
+    return sorted(story_titles, key=lambda x: x["title"])
 
 
 if __name__ == "__main__":

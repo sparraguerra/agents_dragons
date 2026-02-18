@@ -177,7 +177,7 @@ export default {
         // Set the initial message with the story intro
         messages.value = [{
           role: 'assistant',
-          content: data.response || data.message || 'Story started successfully!'
+          content: data.introduction
         }]
       } catch (error) {
         console.error('Error starting story:', error)
