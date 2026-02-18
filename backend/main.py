@@ -12,6 +12,7 @@ import logging
 from agent_framework import AIFunction
 from pathlib import Path
 from typing import Dict, List    
+from agents.character_retrieval import CharacterRetrievalAgent    
 
 
 
@@ -33,6 +34,10 @@ tools = [AIFunction(func=agent.run, name=agent.name, description=agent.descripti
 scene_manager = SceneManager()
 scene_tools = [AIFunction(func=getattr(scene_manager, tool['name']), name=tool['name'], description=tool['description'], input_model=tool['input_model']) for tool in scene_manager.tools_exposed]
 tools.extend(scene_tools)
+
+database_manager = CharacterRetrievalAgent()
+database_tools = [AIFunction(func=getattr(database_manager, tool['name']), name=tool['name'], description=tool['description']) for tool in database_manager.tools_exposed]
+tools.extend(database_tools)
 
 orchestrator_agent = OrchestratorAgent()
 
@@ -111,4 +116,4 @@ async def get_stories():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8005)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

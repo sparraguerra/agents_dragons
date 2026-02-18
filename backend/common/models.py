@@ -34,6 +34,7 @@ class Stats(BaseModel):
     WIS: int
     CHA: int
     AC: int
+    MAX_HP: int
     DMG_DICE: int
 
 class RulesCharacter(BaseModel):
