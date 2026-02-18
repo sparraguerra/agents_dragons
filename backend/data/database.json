@@ -1,0 +1,46 @@
+{
+  "characters": {
+    "Zug Zug": {
+      "race": "Orc",
+      "stats": {
+        "STR": 16,
+        "DEX": 12,
+        "CON": 15,
+        "INT": 8,
+        "WIS": 10,
+        "CHA": 9,
+        "AC": 14,
+        "MAX_HP": 30,
+        "DMG_DICE": 12
+      }
+    }
+  },
+  "races": {
+    "Goblin": {
+      "stats": {
+        "STR": 8,
+        "DEX": 14,
+        "CON": 10,
+        "INT": 8,
+        "WIS": 8,
+        "CHA": 8,
+        "AC": 12,
+        "MAX_HP": 7,
+        "DMG_DICE": 4
+      }
+    },
+    "Hobgoblin": {
+      "stats": {
+        "STR": 14,
+        "DEX": 12,
+        "CON": 14,
+        "INT": 8,
+        "WIS": 8,
+        "CHA": 12,
+        "AC": 14,
+        "MAX_HP": 16,
+        "DMG_DICE": 8
+      }
+    }
+  }
+}
