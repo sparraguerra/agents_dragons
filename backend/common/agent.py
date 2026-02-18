@@ -15,7 +15,7 @@ class Agent:
         
         self.logger = config_logging(self.name)
         try:
-            with open(f'{root_dir}/prompts/{name}.md', 'r') as f:
+            with open(f'{root_dir}/prompts/{name}.md', 'r', encoding='utf-8') as f:
                 instructions = f.read()
         except FileNotFoundError:
             instructions = "No instructions provided."
@@ -47,3 +47,10 @@ class Agent:
             return response
         else:
             return response.text
+            
+    async def run_stream(self, input: str, response_format = None, debug: bool = False):
+        async for chunk in self.agent.run_stream(input, thread=self.thread, response_format = response_format):
+            if debug:
+                yield chunk
+            else:
+                yield chunk.text

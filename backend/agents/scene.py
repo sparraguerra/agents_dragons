@@ -48,7 +48,7 @@ class SceneManager(Agent):
         with open(self.scene_path, 'w') as f:
             json.dump({"characters": []}, f)
                         
-        with open(self.scene_path, 'r') as f:
+        with open(self.scene_path, 'r', encoding='utf-8') as f:
             self.data = json.load(f)
             
     def get_scene(self):

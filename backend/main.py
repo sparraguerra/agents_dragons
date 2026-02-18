@@ -1,5 +1,6 @@
 import base64
 from fastapi import FastAPI
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agents.npc import NPCAgent
@@ -56,14 +57,20 @@ async def play_game(request: GameRequest):
     if request.agent_name == "Orchestrator":
         logging.info(f"Received message for Orchestrator: {request.message}")
         scene = scene_manager.get_scene()  # Get the current scene to provide context to the orchestrator
-        result = await orchestrator_agent.run(request.message, scene)
+        async def event_generator():
+            async for event in orchestrator_agent.run_stream(request.message, scene):
+                yield f"data: {event}\n\n"
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream"
+        )
     else:
         selected_agent = next(agent for agent in sub_agents if agent.name == request.agent_name)
         logging.info(f"Received message for {request.agent_name}: {request.message}")
         result = await selected_agent.run(request.message)
         
-    result = result.replace("```markdown", "").replace("```", "")  # Clean markdown code block formatting if present
-    return GameResponse(response=result)
+        result = result.replace("```markdown", "").replace("```", "")  # Clean markdown code block formatting if present
+        return GameResponse(response=result)
 
 
 @app.post("/start")

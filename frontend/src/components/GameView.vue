@@ -4,7 +4,7 @@
     <div v-if="loading" class="h-full flex items-center justify-center">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-fantasy-gold mb-6"></div>
-        <h2 class="text-2xl font-bold text-fantasy-gold mb-2">{{ storyTitle }}</h2>
+        <h2 class="text-2xl capitalize font-bold text-fantasy-gold mb-2">{{ storyTitle }}</h2>
         <p class="text-gray-400">Preparing your adventure...</p>
       </div>
     </div>
@@ -15,7 +15,7 @@
       <header class="bg-fantasy-medium border-b border-fantasy-accent p-4 shadow-lg">
         <div class="container mx-auto flex items-center justify-between">
           <div>
-            <h1 class="text-3xl font-bold text-fantasy-gold">🐉 {{ storyTitle }}</h1>
+            <h1 class="text-3xl capitalize font-bold text-fantasy-gold">🐉 {{ storyTitle }}</h1>
             <p class="text-gray-400 text-sm mt-1">AI-Powered Narrative Roleplaying Game</p>
           </div>
           <button 
@@ -209,7 +209,7 @@ Error: ${error.message}`
       isTyping.value = true
 
       try {
-        // Call the backend API
+        // Call the backend API with streaming
         const response = await fetch('http://localhost:8005/game', {
           method: 'POST',
           headers: {
@@ -225,24 +225,47 @@ Error: ${error.message}`
           throw new Error('Failed to get response from server')
         }
 
-        const data = await response.json()
-        
+        // Create an empty assistant message that will be populated with the stream
         messages.value.push({
-          role: 'assistant',
-          content: data.response
+            role: 'assistant',
+            content: ''
         })
+        
+        const messageIndex = messages.value.length - 1
+
+        // Read the stream
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+
+        while (true) {
+          const { done, value } = await reader.read()
+          
+          if (done) {
+            break
+          }
+
+          // Decode the chunk
+          const chunk = decoder.decode(value, { stream: true })
+          
+          // Parse SSE format (data: <content>\n\n)
+          const lines = chunk.split('\n')
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const content = line.substring(6) // Remove 'data: ' prefix
+              messages.value[messageIndex].content += content
+              scrollToBottom()
+            }
+          }
+        }
       } catch (error) {
         console.error('Error sending message:', error)
         
-        // Show error message to user
-        messages.value.push({
-          role: 'assistant',
-          content: `**[Error]**
+        // Update the assistant message with error
+        messages.value[messageIndex].content = `**[Error]**
 
 Failed to connect to the game server. Please make sure the backend is running at http://localhost:8005
 
 Error: ${error.message}`
-        })
       } finally {
         isTyping.value = false
         scrollToBottom()
