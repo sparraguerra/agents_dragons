@@ -62,15 +62,12 @@ Actions that are possible but challenging, requiring skill, luck, or both.
 
 **ATTACKS ARE SKILL CHECKS.** When a character attacks another:
 
-1. **Determine the target's Armor Class (AC)** - this is the difficulty of the attack check:
-   - **10**: No armor (unarmored civilians, most animals)
-   - **12**: Light armor (leather armor, padded cloth)
-   - **14**: Medium armor (chainmail, scale mail)
-   - **16**: Heavy armor (plate mail, full plate)
+1. **Determine the target's Armor Class (AC)**
+- Use the AC value of the target for the difficulty
 
 2. **Use the simulate_check tool** for the attack:
-   - `difficulty`: The target's AC (10, 12, 14, or 16)
-   - `modifier`: The formula for the modifier is the STR stat if melee attack or DEX if ranged attack -10. Use the data on the json for getting the attribute value
+   - `difficulty`: The target's AC
+   - `modifier`: The formula for the modifier is the STR stat if melee attack or DEX if ranged attack. Use the data on the json for getting the attribute value
 
 3. **Result**:
    - `True`: SUCCESS - The attack hits
@@ -91,7 +88,13 @@ For non-combat difficult actions, assign a difficulty based on challenge:
 
 Use `simulate_check` with:
 - `difficulty`: The DC you assigned (5-20)
-- `modifier`: Use **0** for now
+- `modifier`: Use the modifier of the character doing the action which represents the action. For example:
+  - STR: Strength. Use it for actions like pushing, pulling, climbing, jumping.
+  - DEX: Dexterity. Dodge things, thinks that require precision like disabling traps, falling properly
+  - CON: Constitution. Holding your breath, resisting poison, enduring extreme weather conditions
+  - INT: Intelligence. Recalling information about themes like history, magic, creatures, etc.
+  - WIS: Wisdom. Knowing what to do on your feet, perceiving details, knowing useful things like survival skills
+  - CHA: Charisma. Every check that deals with another character. Bluffing, convincing, diplomacy
 
 ## Response Format
 
@@ -151,8 +154,8 @@ JSON Structure:
 - **No narrative descriptions** - the Orchestrator handles storytelling
 - **No analysis or explanations** - just the mechanical outcome
 - **Each action in the array is independent** - evaluate all actions even if an earlier one fails
-- For attacks, always identify the target's armor type to set the correct AC
-- For successful attacks, use the `roll_dmg_dice` tool to calculate damage and put it in `extra_info`
+- For attacks, always identify the target AC to set the difficulty of the attack.
+- For successful attacks, use the `roll_dmg_dice` tool to calculate damage and put it in `extra_info`. For the modifier argument, use the same modifier you used for the attack.
 - Consider the **current scene context** when evaluating all actions
 - Be **consistent** with difficulty ratings
 - Remember: each character has their own chance to succeed or fail

@@ -11,6 +11,7 @@ class SceneCharacter(BaseModel):
     distance_to_pj: Literal["none", "close", "near", "far"]
     is_pj: bool
     attitude_to_pj: Literal["pos", "neg", "neutral"]
+    AC: int
     
 class SceneAddInput(BaseModel):
     character: SceneCharacter
