@@ -26,10 +26,14 @@ class OrchestratorAgent(Agent):
         return introduction
     
     async def run(self, user_input: str, scene: Scene, debug: bool = False) -> str:
+        for character in scene['characters']:
+            character['acted'] = False
         full_input = f"Current scene: {scene}\n\nUser input: {user_input}"
         return await super().run(full_input, debug=debug)
     
     async def run_stream(self, user_input: str, scene: Scene, debug: bool = False):
+        for character in scene['characters']:
+            character['acted'] = False
         full_input = f"Current scene: {scene}\n\nUser input: {user_input}"
         async for chunk in super().run_stream(full_input, debug=debug):
             yield chunk

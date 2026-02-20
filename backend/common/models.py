@@ -12,6 +12,7 @@ class SceneCharacter(BaseModel):
     is_pj: bool
     attitude_to_pj: Literal["pos", "neg", "neutral"]
     AC: int
+    acted: bool = False
     
 class SceneAddInput(BaseModel):
     character: SceneCharacter
