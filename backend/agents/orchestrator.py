@@ -5,16 +5,13 @@ import os
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class OrchestratorAgent(Agent):
-    def __init__(self):
-        pass
-
     def init_agent(self, tools: list, story):
         with open(f'{root_dir}/stories/{story.replace(' ','_')}.md', 'r', encoding='utf-8') as f:
             story_content = f.read()
-            
-        introduction = '\n'.join(story_content.split('##')[1].split('\n')[1:]).strip()
         
-        super().__init__(
+        introduction = '##'+story_content.split('##')[1].strip()    
+        
+        super().init_agent(
                 name="Orchestrator",
                 description="The agent that narrates the story based on the user input and the story context.",
                 tools=tools,

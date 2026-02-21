@@ -1,0 +1,83 @@
+from common.agent import Agent
+from common.config import Config
+from typing import Optional
+import requests
+
+class ImageGenerationAgent(Agent):
+    def init_agent(self, introduction: str = None):
+        
+        self.config = Config()
+        self.image_generator_url = (
+            f"{self.config.image_endpoint}/v1/publishers/google/models/"
+            f"{self.config.image_model_id}:generateContent?key={self.config.image_api_key}"
+        )
+        self.previously_generated_image = None
+        super().init_agent(
+                name="ImageGeneration",
+                description="""
+                    The agent that generates images based on the provided story context.
+                """,
+                tools=[],
+                extra_instructions=introduction
+            )
+        
+    async def run(self, story_context: str) -> str:
+        generated_prompt = await super().run(story_context)
+        self.previously_generated_image = self.generate_image(generated_prompt, self.previously_generated_image)
+        return self.previously_generated_image
+    
+    def generate_image(self, description: str, previously_generated_image: Optional[str] = None) -> Optional[dict]:
+        """Generate an image using Google Gemini Image 2.5 Flash.
+        
+        Args:
+            description: Text description of the image to generate
+            previously_generated_image: Previous image for coherence. (Optional, base64 encoded string)
+            
+        Returns:
+            Dictionary with image data (base64 encoded) and metadata, or None if generation fails
+        """
+        
+        request_data = {
+            "contents": [
+                {
+                    "role": "user",
+                    "parts": [
+                        {
+                            "text": description
+                        },
+                    ],
+                }
+            ],
+            "generationConfig": {
+                "temperature": 1,
+                "maxOutputTokens": 32768,
+                "responseModalities": ["IMAGE"],
+                "topP": 0.95,
+            },
+        }
+        
+        if previously_generated_image:
+            request_data["contents"][0]["parts"].insert(0, {
+                "inlineData": {
+                    "mimeType": "image/png",
+                    "data": previously_generated_image,
+                }
+            })
+        
+        response = requests.post(
+            self.image_generator_url,
+            headers={"Content-Type": "application/json"},
+            json=request_data,
+            timeout=120,
+        )
+        
+        if response.status_code != 200:
+            self.logger.error(f"Image generation Error {response.status_code}: {response.text}")
+            return None
+        data = response.json()
+        
+        # Extract generated image
+        for part in data["candidates"][0]["content"]["parts"]:
+            if "inlineData" in part:
+                return part["inlineData"]["data"]
+        return None

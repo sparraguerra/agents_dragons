@@ -2,8 +2,8 @@ from common.agent import Agent
 from common.models import NPCOutput
 
 class NPCAgent(Agent):
-    def __init__(self):
-        super().__init__(
+    def init_agent(self):
+        super().init_agent(
                 name="NPC",
                 description="""
                     The agent that acts as a single non-player character in the story. 

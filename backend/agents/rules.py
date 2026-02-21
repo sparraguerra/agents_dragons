@@ -85,8 +85,8 @@ def roll_dmg_dice(character_name: str, targets: list[RollDiceTarget], modifier_n
 
 
 class RulesAgent(Agent):
-    def __init__(self):
-        super().__init__(
+    def init_agent(self):
+        super().init_agent(
                 name="Rules",
                 description="""
                     This agent has access to the rules of the story world. It receives the intent of the characters, checks if it is possible and how difficult it is. It returns what happens with the action the character actions

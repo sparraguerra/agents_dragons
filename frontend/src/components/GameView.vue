@@ -28,8 +28,14 @@
       </header>
 
       <!-- Main Chat Area -->
-      <div class="flex-1 overflow-hidden">
-      <div class="container mx-auto h-full flex flex-col py-4 px-4">
+      <div class="flex-1 overflow-hidden relative">
+        <!-- Background Image -->
+        <div 
+          v-if="backgroundImage" 
+          class="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+          :style="{ backgroundImage: `url(data:image/png;base64,${backgroundImage})` }"
+        ></div>
+      <div class="container mx-auto h-full flex flex-col py-4 px-4 relative z-10">
         <!-- Messages Container -->
         <div 
           ref="messagesContainer" 
@@ -45,7 +51,7 @@
               v-if="message.role === 'user'" 
               class="flex justify-end"
             >
-              <div class="max-w-3xl bg-fantasy-highlight rounded-lg p-4 shadow-md">
+              <div class="max-w-3xl bg-fantasy-highlight bg-opacity-75 rounded-lg p-4 shadow-md">
                 <div class="flex items-start gap-3">
                   <div class="flex-1">
                     <p class="text-sm font-semibold text-fantasy-gold mb-1">You</p>
@@ -61,7 +67,7 @@
               v-else 
               class="flex justify-start"
             >
-              <div class="max-w-3xl bg-fantasy-accent rounded-lg p-4 shadow-md">
+              <div class="max-w-3xl bg-fantasy-accent bg-opacity-75 rounded-lg p-4 shadow-md">
                 <div class="flex items-start gap-3">
                   <span class="text-2xl">📜</span>
                   <div class="flex-1">
@@ -78,7 +84,7 @@
 
           <!-- Typing Indicator -->
           <div v-if="isTyping" class="flex justify-start animate-fade-in">
-            <div class="max-w-3xl bg-fantasy-accent rounded-lg p-4 shadow-md">
+            <div class="max-w-3xl bg-fantasy-accent bg-opacity-75 rounded-lg p-4 shadow-md">
               <div class="flex items-start gap-3">
                 <span class="text-2xl">📜</span>
                 <div class="flex space-x-2">
@@ -92,7 +98,20 @@
         </div>
 
         <!-- Input Area -->
-        <div class="bg-fantasy-medium rounded-lg p-4 shadow-lg">
+        <div class="bg-fantasy-medium bg-opacity-75 rounded-lg p-4 shadow-lg">
+          <!-- Image Generation Checkbox -->
+          <div class="mb-3 flex items-center gap-2">
+            <input
+              id="image-generation-toggle"
+              v-model="imageGenerationEnabled"
+              type="checkbox"
+              class="w-4 h-4 text-fantasy-gold bg-fantasy-dark border-fantasy-accent rounded focus:ring-fantasy-gold focus:ring-2"
+            />
+            <label for="image-generation-toggle" class="text-gray-300 text-sm cursor-pointer">
+              🎨 Enable AI Image Generation
+            </label>
+          </div>
+          
           <form @submit.prevent="sendMessage" class="flex gap-3">
             <input
               v-model="inputMessage"
@@ -136,6 +155,8 @@ export default {
     const inputMessage = ref('')
     const isTyping = ref(false)
     const messagesContainer = ref(null)
+    const imageGenerationEnabled = ref(false)
+    const backgroundImage = ref(null)
 
     // Configure marked for better rendering
     marked.setOptions({
@@ -227,8 +248,8 @@ Error: ${error.message}`
 
         // Create an empty assistant message that will be populated with the stream
         messages.value.push({
-            role: 'assistant',
-            content: ''
+          role: 'assistant',
+          content: ''
         })
         
         const messageIndex = messages.value.length - 1
@@ -246,17 +267,30 @@ Error: ${error.message}`
 
           // Decode the chunk
           const chunk = decoder.decode(value, { stream: true })
-          
-          // Parse SSE format (data: <content>\n\n)
-          const lines = chunk.split('\n')
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const content = line.substring(6) // Remove 'data: ' prefix
-              messages.value[messageIndex].content += content
-              scrollToBottom()
-            }
-          }
+          messages.value[messageIndex].content += chunk
+          scrollToBottom()
         }
+        isTyping.value = false
+        // Generate image if enabled
+        console.log(imageGenerationEnabled.value)
+        if (imageGenerationEnabled.value) {
+          try {
+            const imageResponse = await fetch('http://localhost:8005/create_image', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+
+            if (imageResponse.ok) {
+              const imageData = await imageResponse.json()
+              backgroundImage.value = imageData.image
+            }
+          } catch (imageError) {
+            console.error('Error generating image:', imageError)
+            // Don't show error to user, just fail silently for image generation
+          }
+        }        
       } catch (error) {
         console.error('Error sending message:', error)
         
@@ -282,6 +316,8 @@ Error: ${error.message}`
       inputMessage,
       isTyping,
       messagesContainer,
+      imageGenerationEnabled,
+      backgroundImage,
       renderMarkdown,
       sendMessage
     }
