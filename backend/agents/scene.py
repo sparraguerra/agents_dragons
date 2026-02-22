@@ -48,7 +48,7 @@ class SceneManager:
 
             
     def reset_scene(self):
-        with open(self.scene_path, 'w') as f:
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
             json.dump({"characters": []}, f, indent=2)
                         
         with open(self.scene_path, 'r', encoding='utf-8') as f:
@@ -60,7 +60,7 @@ class SceneManager:
     def add_character_to_scene(self, character: SceneCharacter):
         self.logger.info(f"Adding character to scene: {character}")
         self.data['characters'].append(character)
-        with open(self.scene_path, 'w') as f:
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
             json.dump(self.data, f, indent=2)
             
         self.logger.info(f"Current scene after adding character: {self.data}")
@@ -75,7 +75,7 @@ class SceneManager:
                 if key == 'current_hp' and value <= 0:
                     return self.remove_character_from_scene(name)
                 character[key] = value
-            with open(self.scene_path, 'w') as f:
+            with open(self.scene_path, 'w', encoding='utf-8') as f:
                 json.dump(self.data, f, indent=2)
             return self.data
         else:
@@ -84,6 +84,6 @@ class SceneManager:
     def remove_character_from_scene(self, name: str):
         self.logger.info(f"Removing character from scene: {name}")
         self.data['characters'] = [c for c in self.data['characters'] if c['name'] != name]
-        with open(self.scene_path, 'w') as f:
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
             json.dump(self.data, f, indent=2)
         return self.data
