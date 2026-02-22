@@ -67,13 +67,11 @@ Actions that are possible but challenging, requiring skill, luck, or both.
 
 2. **Use the simulate_check tool** for the attack:
    - `difficulty`: The target's AC
-   - `modifier`: The formula for the modifier is the STR stat if melee attack or DEX if ranged attack. Use the data on the json for getting the attribute value
+   - `modifier`: The formula for the modifier is the STR_MOD stat if melee attack or DEX_MOD if ranged attack. Use the data on the json for getting the attribute value
 
 3. **Result**:
    - `True`: SUCCESS - The attack hits
    - `False`: FAILURE - The attack misses
-
-4. **Remember**: Each attacker rolls separately. In a 3-vs-1 fight, perform 3 individual attack checks.
 
 ## Skill Check System (Non-Combat)
 
@@ -89,12 +87,12 @@ For non-combat difficult actions, assign a difficulty based on challenge:
 Use `simulate_check` with:
 - `difficulty`: The DC you assigned (5-20)
 - `modifier`: Use the modifier of the character doing the action which represents the action. For example:
-  - STR: Strength. Use it for actions like pushing, pulling, climbing, jumping.
-  - DEX: Dexterity. Dodge things, thinks that require precision like disabling traps, falling properly
-  - CON: Constitution. Holding your breath, resisting poison, enduring extreme weather conditions
-  - INT: Intelligence. Recalling information about themes like history, magic, creatures, etc.
-  - WIS: Wisdom. Knowing what to do on your feet, perceiving details, knowing useful things like survival skills
-  - CHA: Charisma. Every check that deals with another character. Bluffing, convincing, diplomacy
+  - STR_MOD: Strength. Use it for actions like pushing, pulling, climbing, jumping.
+  - DEX_MOD: Dexterity. Dodge things, thinks that require precision like disabling traps, falling properly
+  - CON_MOD: Constitution. Holding your breath, resisting poison, enduring extreme weather conditions
+  - INT_MOD: Intelligence. Recalling information about themes like history, magic, creatures, etc.
+  - WIS_MOD: Wisdom. Knowing what to do on your feet, perceiving details, knowing useful things like survival skills
+  - CHA_MOD: Charisma. Every check that deals with another character. Bluffing, convincing, diplomacy
 
 ## Response Format
 

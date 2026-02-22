@@ -7,6 +7,9 @@ import json
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             
 class Agent:
+    def __init__(self):
+        self.initialized = False
+        
     def init_agent(self, name: str, description: str, tools: list = [], threading: bool = True, input_model = None, parallel_tool_calls=False, allow_multiple_tool_calls=False, extra_instructions:str = None):
         openai_client = get_openai_client()
         self.name = name
@@ -39,6 +42,8 @@ class Agent:
             self.thread = None
             
         self.previously_generated_response = None
+        
+        self.initialized = True
         
     async def run(self, input: str, response_format = None, debug: bool = False) -> str:
         self.logger.info(f"Received input: {input}")

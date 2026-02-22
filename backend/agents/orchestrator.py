@@ -1,5 +1,5 @@
 from common.agent import Agent
-from common.models import Scene  
+from common.models import Scene, CharacterSheetNames  
 import os
 
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,11 +22,11 @@ class OrchestratorAgent(Agent):
         
         return introduction
     
-    async def run(self, user_input: str, scene: Scene, debug: bool = False) -> str:
-        full_input = f"Current scene: {scene}\n\nUser input: {user_input}"
+    async def run(self, user_input: str, scene: Scene, character_sheets: CharacterSheetNames, debug: bool = False) -> str:
+        full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
         return await super().run(full_input, debug=debug)
     
-    async def run_stream(self, user_input: str, scene: Scene, debug: bool = False):
-        full_input = f"Current scene: {scene}\n\nUser input: {user_input}"
+    async def run_stream(self, user_input: str, scene: Scene, character_sheets: CharacterSheetNames, debug: bool = False):
+        full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
         async for chunk in super().run_stream(full_input, debug=debug):
             yield chunk

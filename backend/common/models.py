@@ -4,14 +4,13 @@ from typing import List, Literal
 
 class SceneCharacter(BaseModel):
     name: str
-    type: str
+    sheet_name: str
     physical_description: str
     personality_description: str
     current_hp: int = Field(ge=0)
     distance_to_pj: Literal["none", "close", "near", "far"]
     is_pj: bool
-    attitude_to_pj: Literal["pos", "neg", "neutral"]
-    AC: int
+    attitude_to_pj: Literal["friendly", "positive", "neutral", "negative", "hostile"]
     
 class SceneAddInput(BaseModel):
     character: SceneCharacter
@@ -28,15 +27,22 @@ class Scene(BaseModel):
     characters: List[SceneCharacter]
 
 class Stats(BaseModel):
-    STR: int
-    DEX: int
-    CON: int
-    INT: int
-    WIS: int
-    CHA: int
+    STR_MOD: int
+    DEX_MOD: int
+    CON_MOD: int
+    INT_MOD: int
+    WIS_MOD: int
+    CHA_MOD: int
     AC: int
     MAX_HP: int
     DMG_DICE: int
+
+class CharacterSheetNames(BaseModel):
+    character_sheets: List[str]
+    
+class CharacterSheetAddInput(BaseModel):
+    sheet_name: str
+    stats: Stats
 
 class RulesCharacter(BaseModel):
     name: str
@@ -44,7 +50,9 @@ class RulesCharacter(BaseModel):
     stats: Stats
     
 class RulesInput(BaseModel):
-    character: RulesCharacter
+    character_name: str
+    intent_list: List[str]
+    target_character_name: str
     scene: Scene
     
 class RulesOutput(BaseModel):
@@ -52,6 +60,10 @@ class RulesOutput(BaseModel):
     intent: str
     success: bool
     damage: int
+    
+class NPCInput(BaseModel):
+    story_context: str
+    character: SceneCharacter
     
 class NPCOutput(BaseModel):
     character_name: str
@@ -61,7 +73,7 @@ class NPCOutput(BaseModel):
 RulesInputSchema = RulesInput.schema()
 
 class RulesFullOutput(BaseModel):
-    rulesOutput: RulesOutput
+    rulesOutput: list[RulesOutput]
     scene: Scene
            
 class RollDiceTarget(BaseModel):
