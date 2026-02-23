@@ -1,4 +1,3 @@
-from common.agent import Agent
 from common.models import SceneCharacter, SceneAddInput, SceneUpdateInput, SceneRemoveInput
 import os
 import json
@@ -7,7 +6,7 @@ from common.logging import config_logging
 root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-class SceneManager(Agent):
+class SceneManager:
     def __init__(self):
         self.logger = config_logging("SceneManager")
         self.tools_exposed =[
@@ -45,8 +44,12 @@ class SceneManager(Agent):
         
         
         self.scene_path = os.path.join(root_dir, 'data', 'scene.json')
-        with open(self.scene_path, 'w') as f:
-            json.dump({"characters": []}, f)
+        self.reset_scene()
+
+            
+    def reset_scene(self):
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
+            json.dump({"characters": []}, f, indent=2)
                         
         with open(self.scene_path, 'r', encoding='utf-8') as f:
             self.data = json.load(f)
@@ -57,8 +60,8 @@ class SceneManager(Agent):
     def add_character_to_scene(self, character: SceneCharacter):
         self.logger.info(f"Adding character to scene: {character}")
         self.data['characters'].append(character)
-        with open(self.scene_path, 'w') as f:
-            json.dump(self.data, f)
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
+            json.dump(self.data, f, indent=2)
             
         self.logger.info(f"Current scene after adding character: {self.data}")
             
@@ -72,8 +75,8 @@ class SceneManager(Agent):
                 if key == 'current_hp' and value <= 0:
                     return self.remove_character_from_scene(name)
                 character[key] = value
-            with open(self.scene_path, 'w') as f:
-                json.dump(self.data, f)
+            with open(self.scene_path, 'w', encoding='utf-8') as f:
+                json.dump(self.data, f, indent=2)
             return self.data
         else:
             raise ValueError(f"Character with name {name} not found in scene.")
@@ -81,6 +84,6 @@ class SceneManager(Agent):
     def remove_character_from_scene(self, name: str):
         self.logger.info(f"Removing character from scene: {name}")
         self.data['characters'] = [c for c in self.data['characters'] if c['name'] != name]
-        with open(self.scene_path, 'w') as f:
-            json.dump(self.data, f)
+        with open(self.scene_path, 'w', encoding='utf-8') as f:
+            json.dump(self.data, f, indent=2)
         return self.data

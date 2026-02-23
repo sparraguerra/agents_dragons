@@ -7,12 +7,13 @@ from agents.npc import NPCAgent
 from agents.orchestrator import OrchestratorAgent
 from agents.rules import RulesAgent
 from agents.scene import SceneManager
+from agents.image_generation import ImageGenerationAgent
 import uvicorn
 import logging
 from agent_framework import AIFunction
 from pathlib import Path
 from typing import Dict, List    
-from agents.character_retrieval import CharacterRetrievalAgent    
+from agents.character_sheet import CharacterSheetManager    
 
 
 
@@ -28,18 +29,15 @@ app.add_middleware(
 )
 
 # Initialize agents
-sub_agents = [NPCAgent(), RulesAgent()]
-tools = [AIFunction(func=agent.run, name=agent.name, description=agent.description, input_model=agent.input_model) for agent in sub_agents]
+npc_agent = NPCAgent()
+rules_agent = RulesAgent()
+sub_agents = [npc_agent, rules_agent]
 
 scene_manager = SceneManager()
-scene_tools = [AIFunction(func=getattr(scene_manager, tool['name']), name=tool['name'], description=tool['description'], input_model=tool['input_model']) for tool in scene_manager.tools_exposed]
-tools.extend(scene_tools)
-
-database_manager = CharacterRetrievalAgent()
-database_tools = [AIFunction(func=getattr(database_manager, tool['name']), name=tool['name'], description=tool['description']) for tool in database_manager.tools_exposed]
-tools.extend(database_tools)
+character_sheet_manager = CharacterSheetManager()
 
 orchestrator_agent = OrchestratorAgent()
+image_generation_agent = ImageGenerationAgent()
 
 
 class GameRequest(BaseModel):
@@ -52,6 +50,14 @@ class GameResponse(BaseModel):
     
 class StartGameRequest(BaseModel):
     story: str
+    
+def make_tools_list() -> List[AIFunction]:
+    tools = [AIFunction(func=agent.run, name=agent.name, description=agent.description, input_model=agent.input_model) for agent in sub_agents]
+    scene_tools = [AIFunction(func=getattr(scene_manager, tool['name']), name=tool['name'], description=tool['description'], input_model=tool['input_model']) for tool in scene_manager.tools_exposed]
+    tools.extend(scene_tools)
+    character_sheet_tools = [AIFunction(func=getattr(character_sheet_manager, tool['name']), name=tool['name'], description=tool['description'], input_model=tool['input_model']) for tool in character_sheet_manager.tools_exposed]
+    tools.extend(character_sheet_tools)
+    return tools
 
 
 @app.post("/game", response_model=GameResponse)
@@ -59,33 +65,43 @@ async def play_game(request: GameRequest):
     """
     Send a message to the orchestrator agent and get a response.
     """
-    if request.agent_name == "Orchestrator":
-        logging.info(f"Received message for Orchestrator: {request.message}")
-        scene = scene_manager.get_scene()  # Get the current scene to provide context to the orchestrator
-        async def event_generator():
-            async for event in orchestrator_agent.run_stream(request.message, scene):
-                yield f"data: {event}\n\n"
-        return StreamingResponse(
-            event_generator(),
-            media_type="text/event-stream"
-        )
-    else:
-        selected_agent = next(agent for agent in sub_agents if agent.name == request.agent_name)
-        logging.info(f"Received message for {request.agent_name}: {request.message}")
-        result = await selected_agent.run(request.message)
-        
-        result = result.replace("```markdown", "").replace("```", "")  # Clean markdown code block formatting if present
-        return GameResponse(response=result)
+    logging.info(f"Received message for Orchestrator: {request.message}")
+    scene = scene_manager.get_scene()  # Get the current scene to provide context to the orchestrator
+    character_sheets = character_sheet_manager.get_existing_character_sheets()  # Get existing character sheets to provide context to the orchestrator
+    async def event_generator():
+        async for event in orchestrator_agent.run_stream(request.message, scene, character_sheets):
+            yield event
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/plain"
+    )
 
+
+@app.post("/create_image")
+async def create_image():
+    """
+    Create an image based on the user input using the orchestrator agent.
+    """
+    result = await image_generation_agent.run(orchestrator_agent.previously_generated_response)
+    
+    # Assuming the result is a base64 encoded image string
+    return {"image": result}
 
 @app.post("/start")
 async def start_game(request: StartGameRequest):
     """
     Start a new game
     """
-    logging.info(request)
+    scene_manager.reset_scene()  # Reset the scene at the start of a new game
+    character_sheet_manager.reset_character_sheets()  # Reset character sheets at the start of a new game
+    npc_agent.init_agent()
+    rules_agent.init_agent(character_sheet_manager)
+        
+    tools = make_tools_list()
     introduction = orchestrator_agent.init_agent(tools=tools, story=request.story)
-    return {"introduction": introduction}
+    image_generation_agent.init_agent(introduction=introduction)
+    image_generation_agent.previously_generated_image = None  # Reset previously generated image at the start of a new game
+    return {"introduction": '\n'.join(introduction.split('\n')[1:]).strip()}  # Remove the title from the introduction
 
 
 @app.get("/stories", response_model=List[Dict[str, str | None]])
