@@ -23,7 +23,7 @@ You have the story and the current scene as a context. If there are new characte
 ### Step 2: For each character in the scene (player + NPCs):
 1. Identify the intended actions: For the player, use their explicit input - For each NPC in the SCENE with acted: False, call the NPC agent to see what it intends to do. Follow through the next steps with the result. When the player acts, you must call each NPC on the Scene at least once, doing all this procedure.
 2. Before narrating what happens, you MUST ALWAYS call the Rules agent with the intentions of the character to determine if its actions succeed or fail. Remember: The player is a character just like NPCs for rules purposes. Be fair.
-3. After the call to the rules agent, you will get the outcome of the action and the updated scene. The rules agent will manage the life changes from attacks and people dying on the scene, but you must update the scene manually if someone flees or appears in the narrative. Also, change the acted state of the character in the scene to true 
+3. After the call to the rules agent, you will get the outcome of the action and the scene updates. You must apply the scene updates to the scene, using the scene manager tools. If an enemy dies or flees from the scene, you must remove them from the scene. You must also update the acted keyword to true for the character that just called rules.
 
 Example of scene actions:
 Scene: [Player, goblin guard, goblin archer, goblin mage]

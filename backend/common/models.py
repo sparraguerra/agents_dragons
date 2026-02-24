@@ -74,10 +74,6 @@ class NPCOutput(BaseModel):
     
 RulesInputSchema = RulesInput.schema()
 
-class RulesFullOutput(BaseModel):
-    rulesOutput: list[RulesOutput]
-    scene: Scene
-           
 class RollDiceTarget(BaseModel):
     character_name: str
     current_hp: int
@@ -89,3 +85,12 @@ class RollDiceInput(BaseModel):
     num_dice: int
     dice_type: int
     modifier: int = 0
+
+class SceneUpdate(BaseModel):
+    name: str
+    keys_to_update: List[str]
+    new_values: List[str | int | bool]
+
+class RulesFullOutput(BaseModel):
+    rulesOutput: list[RulesOutput]
+    scene_updates: list[SceneUpdate]
