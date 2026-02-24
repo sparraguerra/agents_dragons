@@ -73,7 +73,7 @@
                   <div class="flex-1">
                     <p class="text-sm font-semibold text-fantasy-gold mb-1">Storyteller</p>
                     <div 
-                      class="text-gray-200 prose prose-invert prose-sm max-w-none"
+                      class="text-gray-200 prose prose-invert prose-base max-w-none"
                       v-html="renderMarkdown(message.content)"
                     ></div>
                   </div>
@@ -363,12 +363,21 @@ Error: ${error.message}`
 /* Markdown prose styling */
 :deep(.prose) {
   color: #e5e7eb;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+:deep(.prose p) {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 :deep(.prose h1),
 :deep(.prose h2),
 :deep(.prose h3) {
   color: #e94560;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 :deep(.prose strong) {
@@ -382,8 +391,28 @@ Error: ${error.message}`
 
 :deep(.prose ul),
 :deep(.prose ol) {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  list-style-position: outside;
+}
+
+:deep(.prose ul) {
+  list-style-type: disc;
+}
+
+:deep(.prose ol) {
+  list-style-type: decimal;
+}
+
+:deep(.prose li) {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+:deep(.prose li::marker) {
+  color: #e94560;
 }
 
 :deep(.prose code) {

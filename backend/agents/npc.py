@@ -10,7 +10,8 @@ class NPCAgent(Agent):
                     Whenever the interaction of one non-player character is required, the orchestrator agent will call this agent with the appropriate context, name and personality, and this agent will generate the response and/or action intent as if it were that character.
                 """,
                 tools=[],
-                input_model=NPCInput
+                input_model=NPCInput,
+                threading=False
             )
         
     async def run(self, story_context: str, character: SceneCharacter) -> str:

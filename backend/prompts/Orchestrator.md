@@ -45,6 +45,7 @@ Combine all the information into a cohesive, engaging narrative:
 - Include NPC dialogue and reactions from the NPC agent
 - Maintain dramatic tension and pacing
 - Keep the story flowing naturally
+- Give the player some options on what to do next, but don't force them into a specific choice. Let them decide freely.
 
 ## Critical Rules
 

@@ -54,6 +54,24 @@ class ImageGenerationAgent(Agent):
                 "responseModalities": ["IMAGE"],
                 "topP": 0.95,
             },
+            "safetySettings": [
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "OFF"
+                }
+            ]
         }
         
         if previously_generated_image:
@@ -76,8 +94,13 @@ class ImageGenerationAgent(Agent):
             return None
         data = response.json()
         
-        # Extract generated image
-        for part in data["candidates"][0]["content"]["parts"]:
-            if "inlineData" in part:
-                return part["inlineData"]["data"]
+        try:
+            # Extract generated image
+            for part in data["candidates"][0]["content"]["parts"]:
+                if "inlineData" in part:
+                    return part["inlineData"]["data"]
+        except Exception as e:
+            self.logger.error(data)
+            self.logger.error(f"Error parsing image generation response: {e}")
+            return None
         return None
