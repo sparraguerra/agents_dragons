@@ -42,7 +42,7 @@
             class="group relative overflow-hidden rounded-lg shadow-lg cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl"
           >
             <!-- Background Image -->
-            <div class="aspect-video bg-gradient-to-br from-fantasy-accent to-fantasy-highlight relative">
+            <div class="aspect-[4/3] bg-gradient-to-br from-fantasy-accent to-fantasy-highlight relative">
               <div 
                 v-if="story.image"
                 class="absolute inset-0 bg-cover bg-center opacity-60" 

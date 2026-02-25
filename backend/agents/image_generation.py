@@ -2,16 +2,25 @@ from common.agent import Agent
 from common.config import Config
 from typing import Optional
 import requests
+import base64
+import os
+
+root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class ImageGenerationAgent(Agent):
-    def init_agent(self, introduction: str = None):
+    def init_agent(self, introduction: str = None, story: str = None):
         
         self.config = Config()
         self.image_generator_url = (
             f"{self.config.image_endpoint}/v1/publishers/google/models/"
             f"{self.config.image_model_id}:generateContent?key={self.config.image_api_key}"
         )
-        self.previously_generated_image = None
+        cover_image_path = f'{root_dir}/stories/{story.replace(" ","_")}.png'
+        if os.path.exists(cover_image_path):
+            with open(cover_image_path, "rb") as f:
+                self.previously_generated_image = base64.b64encode(f.read()).decode("utf-8")
+        else:
+            self.previously_generated_image = None
         super().init_agent(
                 name="ImageGeneration",
                 description="""

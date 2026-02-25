@@ -6,7 +6,7 @@ root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 class OrchestratorAgent(Agent):
     def init_agent(self, tools: list, story):
-        with open(f'{root_dir}/stories/{story.replace(' ','_')}.md', 'r', encoding='utf-8') as f:
+        with open(f'{root_dir}/stories/{story.replace(" ","_")}.md', 'r', encoding='utf-8') as f:
             story_content = f.read()
         
         introduction = '##'+story_content.split('##')[1].strip()    

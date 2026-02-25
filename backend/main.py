@@ -99,7 +99,7 @@ async def start_game(request: StartGameRequest):
         
     tools = make_tools_list()
     introduction = orchestrator_agent.init_agent(tools=tools, story=request.story)
-    image_generation_agent.init_agent(introduction=introduction)
+    image_generation_agent.init_agent(introduction=introduction, story=request.story)
     image_generation_agent.previously_generated_image = None  # Reset previously generated image at the start of a new game
     return {"introduction": '\n'.join(introduction.split('\n')[1:]).strip()}  # Remove the title from the introduction
 
