@@ -23,14 +23,22 @@ class OrchestratorAgent(Agent):
         return introduction
     
     async def run(self, user_input: str, scene: Scene, character_sheets: CharacterSheetNames, debug: bool = False) -> str:
-        for character in scene['characters']:
-            character['acted'] = False
-        full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
-        return await super().run(full_input, debug=debug)
+        try:
+            for character in scene['characters']:
+                character['acted'] = False
+            full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
+            return await super().run(full_input, debug=debug)
+        except Exception as e:
+            self.logger.error(e)
+            return ''
     
     async def run_stream(self, user_input: str, scene: Scene, character_sheets: CharacterSheetNames, debug: bool = False):
-        for character in scene['characters']:
-            character['acted'] = False
-        full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
-        async for chunk in super().run_stream(full_input, debug=debug):
-            yield chunk
+        try:
+            for character in scene['characters']:
+                character['acted'] = False
+            full_input = f"Current scene: {scene}\n\nUser input: {user_input}\n\nExisting Character sheets: {character_sheets}"
+            async for chunk in super().run_stream(full_input, debug=debug):
+                yield chunk
+        except Exception as e:
+            self.logger.error(e)
+            yield ''

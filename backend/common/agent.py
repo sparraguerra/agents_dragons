@@ -52,18 +52,17 @@ class Agent:
         self.logger.info(f"Usage details: {response.usage_details}")
         self.previously_generated_response = response.text
         if debug:
-            return response
-        else:
-            return response.text
+            with open(f'{root_dir}/debug/{self.name}_debug.json', 'w', encoding='utf-8') as f:
+                json.dump(response.to_dict(), f, indent=2)
+        
+        return response.text
             
     async def run_stream(self, input: str, response_format = None, debug: bool = False):
         self.logger.info(f"Received input: {input}")
         full_response = ""
         async for chunk in self.agent.run_stream(input, thread=self.thread, response_format = response_format):
             full_response += chunk.text
-            if debug:
-                yield chunk
-            else:
-                yield chunk.text
+            yield chunk.text
+        
         self.logger.info(f"Generated response: {full_response}")
         self.previously_generated_response = full_response

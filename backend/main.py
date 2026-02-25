@@ -69,7 +69,7 @@ async def play_game(request: GameRequest):
     scene = scene_manager.get_scene()  # Get the current scene to provide context to the orchestrator
     character_sheets = character_sheet_manager.get_existing_character_sheets()  # Get existing character sheets to provide context to the orchestrator
     async def event_generator():
-        async for event in orchestrator_agent.run_stream(request.message, scene, character_sheets):
+        async for event in orchestrator_agent.run_stream(request.message, scene, character_sheets, debug=True):
             yield event
     return StreamingResponse(
         event_generator(),

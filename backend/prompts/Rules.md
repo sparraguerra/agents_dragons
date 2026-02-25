@@ -98,46 +98,43 @@ Use `simulate_check` with:
 
 **CRITICAL**: You MUST respond with ONLY valid JSON. No other text before or after.
 
-JSON Structure:
-```json
-{
-  "CharacterName": [
-    {
-      "action": "brief action description",
-      "result": "SUCCESS" or "FAILURE",
-      "extra_info": "optional additional details like damage, distance, etc."
-    }
-  ]
-}
-```
-
 **Rules for the JSON response:**
-- Each character is a key in the root object
-- Each character's value is an array of action objects
-- Each action object has three fields:
-  - `action`: Brief description of what they tried to do
-  - `result`: Either "SUCCESS" or "FAILURE"
-  - `extra_info`: Optional field for additional mechanical info (damage dealt, distance moved, etc.). Can be empty string if not applicable.
+- The root object has two arrays: `action_outcomes` and `scene_updates`
+- `action_outcomes`: An array of outcome objects, each with:
+  - `character_name`: Name of the character performing the action
+  - `intent`: The specific action/intent being evaluated
+  - `success`: Boolean (true/false) indicating if the action succeeded
+  - `damage`: Integer for damage dealt (0 if no damage)
+- `scene_updates`: An array of update objects for modifying scene state, each with:
+  - `name`: Name of the character whose scene info is being updated
+  - `keys_to_update`: Array of field names to update (e.g., ["current_hp", "distance_to_pj"])
+  - `new_values`: Array of new values corresponding to the keys (must be same length)
 
 **Keep it minimal.** The Orchestrator will handle all narrative elaboration. Your job is only to determine if actions succeed or fail and provide relevant mechanical details.
 
-## Example Outputs
+**Example Response:**
 
-**Mixed Actions:**
 ```json
 {
-  "Thief 1": [
+  "action_outcomes": [
     {
-      "action": "Creating distraction",
-      "result": "SUCCESS",
-      "extra_info": ""
+      "character_name": "Zug Zug",
+      "intent": "Correr hacia el árbol donde está el goblin arquero",
+      "success": true,
+      "damage": 0
+    },
+    {
+      "character_name": "Zug Zug",
+      "intent": "Lanzar una jabalina para intentar pinchar al goblin arquero entre las ramas",
+      "success": true,
+      "damage": 8
     }
   ],
-  "Thief 2": [
+  "scene_updates": [
     {
-      "action": "Pickpocketing merchant",
-      "result": "SUCCESS",
-      "extra_info": "Stole 50 gold"
+      "name": "Goblin arquero",
+      "keys_to_update": ["current_hp"],
+      "new_values": [-1]
     }
   ]
 }
@@ -147,13 +144,13 @@ JSON Structure:
 
 - **ALWAYS return valid JSON only** - no extra text, no markdown formatting around it
 - **Use double quotes for all JSON strings**
-- **Keep output minimal** - only action, result, and relevant extra_info
+- **Keep output minimal** - only include the required fields in the response, no narrative descriptions or explanations.
 - **Break down compound actions** - if a character tries multiple things, evaluate each separately
 - **No narrative descriptions** - the Orchestrator handles storytelling
 - **No analysis or explanations** - just the mechanical outcome
 - **Each action in the array is independent** - evaluate all actions even if an earlier one fails
 - For attacks, always identify the target AC to set the difficulty of the attack.
-- For successful attacks, use the `roll_dmg_dice` tool to calculate damage and put it in `extra_info`. For the modifier argument, use the same modifier you used for the attack.
+- For successful attacks, use the `roll_dmg_dice` tool to calculate damage and put it in the `damage` field. For the modifier argument, use the same modifier you used for the attack.
 - Consider the **current scene context** when evaluating all actions
 - Be **consistent** with difficulty ratings
 - Remember: each character has their own chance to succeed or fail

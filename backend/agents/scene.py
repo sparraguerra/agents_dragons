@@ -63,8 +63,6 @@ class SceneManager:
         with open(self.scene_path, 'w', encoding='utf-8') as f:
             json.dump(self.data, f, indent=2)
             
-        self.logger.info(f"Current scene after adding character: {self.data}")
-            
         return self.data
             
     def update_character_in_scene(self, name: str, keys_to_update: list, new_values: list):

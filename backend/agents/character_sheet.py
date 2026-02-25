@@ -41,7 +41,7 @@ class CharacterSheetManager:
     def get_character_sheet(self, sheet_name: str) -> Stats | str:
         char = self.data['characters'].get(sheet_name)
         if char:
-            self.logger.info(f"Retrieved character '{sheet_name}' with stats: {char['stats']}")
+            #self.logger.info(f"Retrieved character '{sheet_name}' with stats: {char['stats']}")
             return Stats(**char['stats'])
         msg = f"Character '{sheet_name}' not found in database. Call add_character_sheet to add it."
         self.logger.warning(msg)

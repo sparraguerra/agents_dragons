@@ -55,6 +55,7 @@ class RulesInput(BaseModel):
     character_name: str
     intent_list: List[str]
     target_character_name: str
+    story_context: str
     scene: Scene
     
 class RulesOutput(BaseModel):
@@ -92,5 +93,5 @@ class SceneUpdate(BaseModel):
     new_values: List[str | int | bool]
 
 class RulesFullOutput(BaseModel):
-    rulesOutput: list[RulesOutput]
+    action_outcomes: list[RulesOutput]
     scene_updates: list[SceneUpdate]
