@@ -1,5 +1,6 @@
 import os
 import json
+from typing import Tuple
 from common.logging import config_logging
 from common.models import Stats, CharacterSheetNames, CharacterSheetAddInput
 
@@ -38,12 +39,12 @@ class CharacterSheetManager:
             
         return f"Character sheet '{sheet_name}' added successfully."
 
-    def get_character_sheet(self, sheet_name: str) -> Stats | str:
+    def get_character_sheet(self, sheet_name: str) -> Tuple[Stats, str]:
         char = self.data['characters'].get(sheet_name)
         if char:
             #self.logger.info(f"Retrieved character '{sheet_name}' with stats: {char['stats']}")
-            return Stats(**char['stats'])
-        msg = f"Character '{sheet_name}' not found in database. Call add_character_sheet to add it."
-        self.logger.warning(msg)
-        return msg
+            return Stats(**char['stats']), ''
+        error = f"Character '{sheet_name}' not found in database. Call add_character_sheet to add it."
+        self.logger.warning(error)
+        return None, error
     

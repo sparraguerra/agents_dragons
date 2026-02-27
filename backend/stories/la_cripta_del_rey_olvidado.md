@@ -1,0 +1,26 @@
+# Story:
+
+This are the story chapters. Introduction is the intro that the player gets (And which explains the start of our story)
+Map description is the description for the map where our story takes place. The main character doesn't know this, but he can vaguely remember some details about the old tunnels and the clan's history that don't include anything related to the undead guardian or the corrupted forge. Don't give them the Map description word by word. Don't improvise anything major outside of the description, but you can add details to the things already explained on there. Don't share that information directly with the player, only the parts that their character discovers by itself.
+
+## Introduction
+
+Eres Throdin Hierrofuerte, un veterano guerrero enano (de nivel 5) del clan Hierrofuerte, una estirpe de herreros y soldados conocida en todo el reino subterráneo. Tu equipo incluye un hacha de guerra de acero enano grabada con las runas del clan, una armadura de placas pesada con faldón de malla, un escudo de torre con el emblema del martillo y el yunque, pociones de curación, una linterna de aceite y un mazo ligero como arma secundaria. Eres experto en combate bajo tierra, con ventaja en tiradas de percepción en cavernas y conocimiento básico de arquitectura enana.
+
+Tu misión es personal: el Hacha de Grimdur, arma fundacional del clan Hierrofuerte forjada por tu ancestro hace cuatro generaciones, fue sepultada junto a él en la Cripta de los Fundadores cuando cayó en batalla. La cripta está en las profundidades de Karaz Dun, una antigua fortaleza enana abandonada hace dos siglos tras una plaga de no-muertos que la dejó inhabitable. Según los archivos del clan, la cripta fue sellada con una llave que se encuentra en las manos del guardián automatizado de la fortaleza: el Custodio, un gólem de piedra y bronce construido para proteger el lugar eternamente.
+
+Llegas a la entrada de Karaz Dun: un portal de piedra de tres metros de alto tallado con bajorrelieves de guerreros enanos, parcialmente cubierto de musgo. La puerta está entreabierta; alguna fuerza la abrió hace tiempo. El interior está oscuro y huele a humedad y a algo más acre, como a metal quemado. Puedes escuchar en la distancia un zumbido grave y rítmico que no reconoces. ¿Qué haces?
+
+## Map description
+
+Karaz Dun es una fortaleza enana excavada en la roca viva bajo una colina, con tres niveles de galerías, salas y talleres conectados por escaleras de piedra y montacargas ahora inoperativos. El nivel superior contiene las dependencias de guardia y los cuarteles; el nivel medio alberga los talleres, la sala de reuniones del clan y las cocinas; el nivel inferior guarda la bóveda del tesoro, la Forja Profunda y la Cripta de los Fundadores.
+
+El nivel superior está parcialmente derrumbado y es difícil de atravesar sin una tirada de atletismo para sortear los escombros. En los cuarteles deambulan cuatro zombis enanos, los restos de la última guarnición que quedó atrapada durante la plaga. Son lentos pero resistentes; sus antiguas armaduras enanas les dan mayor protección que un zombi normal. No tienen inteligencia pero reaccionan al ruido y a la luz.
+
+El nivel medio es donde reside el Custodio: un gólem de piedra y bronce de dos metros y medio de altura que sigue patrullando las salas como le fue ordenado. El Custodio no es hostil por defecto; está programado para cuestionar a los visitantes y verificar si portan el emblema del clan. El emblema del clan Hierrofuerte grabado en el escudo de Throdin podría ser suficiente credencial. Sin embargo, el Custodio fue corrompido parcialmente por la magia de no-muertos que impregnó la fortaleza y a veces entra en estado de furia sin razón aparente; está dañado y sus respuestas son impredecibles. La llave de la cripta cuelga de una cadena en su muñeca derecha.
+
+En los talleres del nivel medio hay herramientas y materiales de herrería en buen estado de conservación, incluyendo aceite de temple y martillos de calidad. También hay un libro de registros del clan con información sobre la historia de la fortaleza y una anotación que menciona que el Custodio puede ser temporalmente desactivado pronunciando el nombre de su creador: Durin Piedraoscura. Encontrar esta información requiere leer el libro, que está en la sala de reuniones, en un estado de deterioro que obliga a hacer una tirada de historia para interpretarlo correctamente.
+
+La Forja Profunda en el nivel inferior fue corrompida por la plaga; emite un calor antinatural y un humo negro que inflige daño por veneno a cualquiera que respire en su interior sin protección. Alrededor de la forja patrullan dos esqueletos de herreros que atacan de forma automática. La forja corrompida podría ser purificada con agua bendita, lo que liberaría el bloqueo mágico que impide abrir la puerta de la cripta desde el exterior.
+
+La Cripta de los Fundadores es una sala circular con siete sarcófagos de granito, uno por cada fundador del clan. El de Grimdur Hierrofuerte, en el centro, contiene el Hacha de Grimdur. El hacha está envuelta en un campo de fuerza mágico que se desactiva con la llave del Custodio o destruyendo la forja corrompida. Si se intenta tomar el hacha sin desactivar el campo, todos los sarcófagos se abren y los siete fundadores reanimados atacan simultáneamente.

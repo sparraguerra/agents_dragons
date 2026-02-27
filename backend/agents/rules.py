@@ -129,10 +129,14 @@ class RulesAgent(Agent):
             for character in scene['characters']:
                 if character['name'] == character_name:
                     character_sheet = character['sheet_name']
-                    character_stats = self.character_sheet_manager.get_character_sheet(character_sheet)
+                    character_stats, character_error_msg = self.character_sheet_manager.get_character_sheet(character_sheet)
+                    if character_error_msg:
+                        return character_error_msg + '\n Ommitting action'
                 if target_character_name and character['name'] == target_character_name:
                     target_character_sheet = character['sheet_name']
-                    target_character_stats = self.character_sheet_manager.get_character_sheet(target_character_sheet)
+                    target_character_stats, target_error_msg = self.character_sheet_manager.get_character_sheet(target_character_sheet)
+                    if target_error_msg:
+                        return target_error_msg + '\n Ommitting action'
             
                 full_input = RulesInput(character_name=character_name, intent_list=intent_list, target_character_name=target_character_name, story_context=story_context, scene=scene).model_dump()
                 if character_stats:
