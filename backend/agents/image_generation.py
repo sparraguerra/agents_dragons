@@ -62,6 +62,7 @@ class ImageGenerationAgent(Agent):
                 "maxOutputTokens": 32768,
                 "responseModalities": ["IMAGE"],
                 "topP": 0.95,
+                "imageConfig": {"aspectRatio": "16:9"}
             },
             "safetySettings": [
                 {
